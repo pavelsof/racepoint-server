@@ -1,13 +1,15 @@
 from django.conf.urls import patterns, include, url
 
-import racepoint.views
+from racepoint.views import init
+from racepoint.views import teams
+from racepoint.views import point
+
 
 urlpatterns = patterns('',
-	url(r'^$', racepoint.views.show_home),
-	url(r'^teams/$', racepoint.views.list_teams),
-	url(r'^teams/add/$', racepoint.views.add_team),
-	url(r'^points/$', racepoint.views.list_points),
-	url(r'^points/add/$', racepoint.views.add_point),
-	url(r'^points/(?P<point_id>\d+)/$', racepoint.views.show_point),
-	url(r'^points/(?P<point_id>\d+)/add/$', racepoint.views.add_event),
+	url(r'^$', init.main_view),
+	url(r'^teams/$', teams.list_all),
+	url(r'^teams/add/$', teams.add_team),
+	url(r'^points/(?P<point_id>\d+)/$', point.main_view),
+	url(r'^points/(?P<point_id>\d+)/add/$', point.add_event),
 )
+

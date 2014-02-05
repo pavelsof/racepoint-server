@@ -15,6 +15,15 @@
 	<script type="text/javascript" src="{% static 'racepoint/script.js' %}"></script>
 </head>
 <body>
-{% block main %}{% endblock %}
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="" class="navbar-brand">Шеметна Варна</a>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+	{% block main %}{% endblock %}
+	</div>
 </body>
 </html>

@@ -1,3 +1,5 @@
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.base import View
@@ -19,7 +21,7 @@ class Main(View):
 	
 	def post(self, request):
 		"""Handles the POST request."""
-		self.login_form = LoginForm(request.POST)
+		self.login_form = self.LoginForm(request.POST)
 		if self.login_form.is_valid():
 			try:
 				point = Point.objects.get(password=self.login_form.cleaned_data['password'])
@@ -35,7 +37,7 @@ class Main(View):
 	def render_login(self, request):
 		"""Renders the login form."""
 		if self.login_form is None:
-			self.login_form = LoginForm()
+			self.login_form = self.LoginForm()
 		return render_to_response(
 			'racepoint/home/login.html',
 			{
@@ -52,9 +54,16 @@ class Main(View):
 			{},
 			context_instance = RequestContext(request)
 		)
+	
+	class LoginForm(forms.Form):
+		name = forms.CharField(max_length=120)
+		password = forms.CharField(max_length=120)
 
 
-class LoginForm(forms.Form):
-	name = forms.CharField(max_length=120)
-	password = forms.CharField(max_length=120)
+class Logout(View):
+	def get(self, request):
+		"""Handles the GET request."""
+		if 'organiser' in request.session:
+			del request.session['organiser']
+		return HttpResponseRedirect('/')
 

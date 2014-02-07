@@ -1,4 +1,3 @@
-from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -28,8 +27,8 @@ class Main(View):
 			except (Point.DoesNotExist, Point.MultipleObjectsReturned):
 				pass
 			else:
-				request.session['organiser'] = self.login_form.cleaned_data['name']
 				request.session['point'] = point
+				request.session['organiser'] = self.login_form.cleaned_data['name']
 				return self.render_home(request)
 		self.error = True
 		return self.render_login(request)
@@ -56,6 +55,7 @@ class Main(View):
 		)
 	
 	class LoginForm(forms.Form):
+		"""Form for authenticating organisers."""
 		name = forms.CharField(max_length=120)
 		password = forms.CharField(max_length=120)
 

@@ -1,21 +1,19 @@
 ﻿{% extends 'racepoint/base.html' %}
 {% load i18n %}
 {% block main %}
-<div class="row">
-	<form action="" method="post">
-		{% if error %}
-		<div class="alert alert-danger">We want dilligence!</div>
-		{% endif %}
-		<div class="form-group {% if form.name.errors %}has-error{% endif %}">
-			<label class="control-label" for="input_username">Твоето име</label>
-			<input type="text" name="{{ form.name.html_name }}" id="input_username" class="form-control" value="{{ form.data.name }}" required maxlength="120" />
-		</div>
-		<div class="form-group {% if form.password.errors %}has-error{% endif %}">
-			<label class="control-label" for="input_password">Парола за твоя пункт</label>
-			<input type="password" name="{{ form.password.html_name }}" id="input_password" class="form-control" value="" required maxlength="120" />
-		</div>
-		{% csrf_token %}
-		<button type="submit" class="btn btn-default">Влез</button>
-	</form>
-</div>
+<form action="" method="post">
+	{% if error %}
+	<div class="alert alert-danger">We want dilligence!</div>
+	{% endif %}
+	<div class="form-group {% if form.name.errors %}has-error{% endif %}">
+		<label class="control-label" for="input_username">Твоето име</label>
+		<input type="text" name="{{ form.name.html_name }}" id="input_username" class="form-control" value="{{ form.data.name }}" required maxlength="120" />
+	</div>
+	<div class="form-group {% if form.password.errors %}has-error{% endif %}">
+		<label class="control-label" for="input_password">Парола за твоя пункт</label>
+		<input type="password" name="{{ form.password.html_name }}" id="input_password" class="form-control" value="" required maxlength="120" />
+	</div>
+	{% csrf_token %}
+	<button type="submit" class="btn btn-default">Влез</button>
+</form>
 {% endblock %}

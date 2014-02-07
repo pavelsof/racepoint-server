@@ -6,7 +6,7 @@ from racepoint.views import point
 
 
 urlpatterns = patterns('',
-	url(r'^$', init.main_view),
+	url(r'^$', init.Main.as_view()),
 	url(r'^teams/$', teams.list_all),
 	url(r'^teams/add/$', teams.add_team),
 	url(r'^points/(?P<point_id>\d+)/$', point.main_view),

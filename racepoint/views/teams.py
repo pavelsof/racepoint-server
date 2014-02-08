@@ -4,8 +4,8 @@ from django.template import RequestContext
 from django.views.generic.base import View
 from django import forms
 
-from racepoint.models import Team
 from racepoint.models import Player
+from racepoint.models import Team
 
 
 class Teams(View):
@@ -18,7 +18,7 @@ class Teams(View):
 		return super(Teams, self).dispatch(request, *args, **kwargs)
 
 
-class TeamsList(Teams):
+class List(Teams):
 	def get(self, request):
 		"""Handles the GET request."""
 		race = request.session['racepoint_session'].password.race
@@ -34,7 +34,7 @@ class TeamsList(Teams):
 		)
 
 
-class TeamsAdd(Teams):
+class Add(Teams):
 	form = None
 	
 	def get(self, request):

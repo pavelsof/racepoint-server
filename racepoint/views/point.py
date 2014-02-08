@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.views.generic.base import View
 from django import forms
 
+from racepoint.models import Team
 from racepoint.models import TeamAtPoint
 
 
@@ -23,8 +24,10 @@ class PointView(View):
 class Main(PointView):
 	def get(self, request):
 		"""Handles the GET request."""
+		all_teams = Team.objects.filter(
+			race = self.point.race
+		).order_by('name')
 		teams_here = []
-		teams_left = []
 		teams_at_this_point = TeamAtPoint.objects.filter(
 			point = self.point,
 			departure__isnull = True
@@ -34,6 +37,7 @@ class Main(PointView):
 				'name': team_at_point.team.name,
 				'arrival': team_at_point.arrival
 			})
+		teams_left = []
 		teams_left_this_point = TeamAtPoint.objects.filter(
 			point = self.point,
 			departure__isnull = False
@@ -47,6 +51,7 @@ class Main(PointView):
 		return render_to_response(
 			'racepoint/point/main.html',
 			{
+				'all_teams': all_teams,
 				'teams_here': teams_here,
 				'teams_left': teams_left
 			},
@@ -55,6 +60,8 @@ class Main(PointView):
 
 
 class Add(PointView):
+	form = None
+	
 	def get(self, request):
 		"""Handles the GET request."""
 		pass

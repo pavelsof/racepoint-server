@@ -68,23 +68,15 @@ class Player(models.Model):
 		return self.name
 
 
-class Event(models.Model):
-	"""One for each happening of interest."""
-	ARRIVAL = 'arr'
-	DEPARTURE = 'dep'
-	type = models.CharField(
-		max_length=3,
-		choices=(
-			(ARRIVAL, 'Arrival'),
-			(DEPARTURE, 'Departure'),
-		)
-	)
-	time = models.TimeField()
-	point = models.ForeignKey(Point)
+class TeamAtPoint(models.Model):
+	"""One for each team passing through a point."""
 	team = models.ForeignKey(Team)
+	point = models.ForeignKey(Point)
+	arrival = models.TimeField(auto_now_add=True)
+	departure = models.TimeField(blank=True, null=True)
 	players = models.ManyToManyField(Player)
 	registered_by = models.ForeignKey(Session)
 	
 	def __str__(self):
-		return self.type + ': ' + self.point + ': ' + self.team
+		return self.point + ': ' + self.team
 

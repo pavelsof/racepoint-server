@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.base import View
@@ -8,10 +8,20 @@ from racepoint.models import Team
 from racepoint.models import Player
 
 
-class TeamsList(View):
+class Teams(View):
+	def dispatch(self, request, *args, **kwargs):
+		"""Requires authentication."""
+		if 'racepoint_session' not in request.session:
+			raise Http404
+		if request.session['racepoint_session'].password.point:
+			raise Http404
+		return super(Teams, self).dispatch(request, *args, **kwargs)
+
+
+class TeamsList(Teams):
 	def get(self, request):
 		"""Handles the GET request."""
-		race = request.session['point'].race
+		race = request.session['racepoint_session'].password.race
 		teams = Team.objects.filter(race=race).order_by('name')
 		for team in teams:
 			team.players = Player.objects.filter(team=team)
@@ -24,7 +34,7 @@ class TeamsList(View):
 		)
 
 
-class TeamsAdd(View):
+class TeamsAdd(Teams):
 	form = None
 	
 	def get(self, request):

@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponseBadRequest
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.base import View
@@ -7,6 +7,8 @@ from django import forms
 from racepoint.models import Player
 from racepoint.models import Team
 from racepoint.models import TeamAtPoint
+
+import json
 
 
 class PointView(View):
@@ -62,6 +64,13 @@ class Main(PointView):
 
 class Ajax(PointView):
 	def post(self, request):
+		"""AJAX is POST only."""
+		task = request.POST['task']
+		if task == 'get_players': return self.get_players(request)
+		elif task == 'add_arrival': return self.add_arrival(request)
+	
+	def get_players(self, request):
+		"""Renders the contents of the select players modal."""
 		try:
 			team_id = int(request.POST['team'])
 		except ValueError:
@@ -78,16 +87,31 @@ class Ajax(PointView):
 			},
 			context_instance = RequestContext(request)
 		)
-
-
-class Add(PointView):
-	form = None
 	
-	def get(self, request):
-		"""Handles the GET request."""
-		pass
-	
-	def post(self, request):
-		"""Handles the POST request."""
-		pass
+	def add_arrival(self, request):
+		"""Adds a new arrival to the db and gives a JSON answer."""
+		try:
+			team_id = int(request.POST['team'])
+		except ValueError: return HttpResponseBadRequest('')
+		try:
+			team = Team.objects.get(pk=team_id)
+		except Team.DoesNotExist: return HttpResponseBadRequest('')
+		players = []
+		for i in request.POST.getlist('players[]'):
+			try:
+				player_id = int(i)
+			except ValueError: return HttpResponseBadRequest('')
+			try:
+				player = Player.objects.get(pk=player_id)
+			except Player.DoesNotExist: return HttpResponseBadRequest('')
+			players.append(player_id)
+		team_at_point = TeamAtPoint()
+		team_at_point.team = team
+		team_at_point.point = self.point
+		team_at_point.registered_by = self.request.session['racepoint_session']
+		team_at_point.save()
+		team_at_point.players = players
+		team_at_point.save()
+		answer = True
+		return HttpResponse(json.dumps(answer))
 

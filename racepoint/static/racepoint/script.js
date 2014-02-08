@@ -37,15 +37,40 @@ var RP = {
 					$.post(
 						'ajax/',
 						{
+							task: 'get_players',
 							team: RP.point.arrivals.input_team.val()
 						},
 						function(data) {
 							RP.point.arrivals.modal.find('.modal-body').html(data);
+							RP.point.arrivals.modal.find('button.btn-primary').click(function() {
+								RP.point.arrivals.add();
+							});
 							RP.point.arrivals.modal.modal();
 						},
 						'html'
 					);
 				});
+			},
+			add: function() {
+				players = RP.point.arrivals.modal.find(':checked').map(function() {
+					return this.value;
+				}).get();
+				$.post(
+					'ajax/',
+					{
+						task: 'add_arrival',
+						team: RP.point.arrivals.input_team.val(),
+						players: players
+					},
+					function(data) {
+						if(data) {
+							RP.point.arrivals.modal.modal('hide');
+						} else {
+							alert('Error!');
+						}
+					},
+					'json'
+				);
 			}
 		},
 		departures: {

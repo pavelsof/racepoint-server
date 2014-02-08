@@ -78,5 +78,5 @@ class TeamAtPoint(models.Model):
 	registered_by = models.ForeignKey(Session)
 	
 	def __str__(self):
-		return self.point + ': ' + self.team
+		return self.point.name + ': ' + self.team.name
 

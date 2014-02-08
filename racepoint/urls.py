@@ -12,6 +12,5 @@ urlpatterns = patterns('',
 	url(r'^teams/add/$', teams.Add.as_view()),
 	url(r'^point/$', point.Main.as_view()),
 	url(r'^point/ajax/$', point.Ajax.as_view()),
-	url(r'^point/add/$', point.Add.as_view()),
 )
 

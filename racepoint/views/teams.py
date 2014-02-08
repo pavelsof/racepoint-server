@@ -9,20 +9,22 @@ from racepoint.models import Team
 
 
 class Teams(View):
+	race = None
+	
 	def dispatch(self, request, *args, **kwargs):
 		"""Requires authentication."""
 		if 'racepoint_session' not in request.session:
 			raise Http404
 		if request.session['racepoint_session'].password.point:
 			raise Http404
+		self.race = request.session['racepoint_session'].password.race
 		return super(Teams, self).dispatch(request, *args, **kwargs)
 
 
 class List(Teams):
 	def get(self, request):
 		"""Handles the GET request."""
-		race = request.session['racepoint_session'].password.race
-		teams = Team.objects.filter(race=race).order_by('name')
+		teams = Team.objects.filter(race=self.race).order_by('name')
 		for team in teams:
 			team.players = Player.objects.filter(team=team)
 		return render_to_response(
@@ -48,7 +50,8 @@ class Add(Teams):
 		if self.form.is_valid():
 			team = Team()
 			team.name = self.form.cleaned_data['team']
-			team.race = request.session['point'].race
+			team.race = self.race
+			team.registered_by = request.session['racepoint_session']
 			team.save()
 			for i in range(1, 5):
 				if self.form.cleaned_data['player_'+str(i)]:

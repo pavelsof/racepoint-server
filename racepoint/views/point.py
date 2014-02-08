@@ -1,9 +1,10 @@
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.base import View
 from django import forms
 
+from racepoint.models import Player
 from racepoint.models import Team
 from racepoint.models import TeamAtPoint
 
@@ -54,6 +55,26 @@ class Main(PointView):
 				'all_teams': all_teams,
 				'teams_here': teams_here,
 				'teams_left': teams_left
+			},
+			context_instance = RequestContext(request)
+		)
+
+
+class Ajax(PointView):
+	def post(self, request):
+		try:
+			team_id = int(request.POST['team'])
+		except ValueError:
+			return HttpResponseBadRequest('')
+		try:
+			team = Team.objects.get(pk=team_id)
+		except Team.DoesNotExist:
+			return HttpResponseBadRequest('')
+		players = Player.objects.filter(team=team)
+		return render_to_response(
+			'racepoint/point/select_players.html',
+			{
+				'players': players
 			},
 			context_instance = RequestContext(request)
 		)

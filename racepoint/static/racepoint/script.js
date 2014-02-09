@@ -5,6 +5,8 @@
 // the god object
 var RP = {
 	
+	AJAX_URL: 'ajax/',
+	
 	// constructor
 	init: function() {
 		if($('#racepoint_point').length > 0) RP.point.init();
@@ -22,6 +24,7 @@ var RP = {
 		init: function() {
 			RP.point.dom = $('#racepoint_point');
 			RP.point.arrivals.init();
+			RP.point.here.init();
 			RP.point.departures.init();
 		},
 		arrivals: {
@@ -35,7 +38,7 @@ var RP = {
 				RP.point.arrivals.form.submit(function(e) {
 					e.preventDefault();
 					$.post(
-						'ajax/',
+						RP.AJAX_URL,
 						{
 							task: 'get_players',
 							team: RP.point.arrivals.input_team.val()
@@ -56,7 +59,7 @@ var RP = {
 					return this.value;
 				}).get();
 				$.post(
-					'ajax/',
+					RP.AJAX_URL,
 					{
 						task: 'add_arrival',
 						team: RP.point.arrivals.input_team.val(),
@@ -64,6 +67,7 @@ var RP = {
 					},
 					function(data) {
 						if(data) {
+							RP.point.here.reload();
 							RP.point.arrivals.modal.modal('hide');
 						} else {
 							alert('Error!');
@@ -73,9 +77,65 @@ var RP = {
 				);
 			}
 		},
-		departures: {
+		here: {
+			dom: false,
 			init: function() {
-				
+				RP.point.here.dom = RP.point.dom.find('tbody.teams_here');
+				RP.point.here.attach_listeners();
+			},
+			reload: function() {
+				$.post(
+					RP.AJAX_URL,
+					{
+						task: 'get_teams_here'
+					},
+					function(data) {
+						RP.point.here.dom.html(data);
+						RP.point.here.attach_listeners();
+					},
+					'html'
+				);
+			},
+			attach_listeners: function() {
+				RP.point.here.dom.find('a').click(function(e) {
+					e.preventDefault();
+					team_id = $(this).data('team');
+					if(team_id) RP.point.departures.add(team_id);
+				});
+			}
+		},
+		departures: {
+			dom: false,
+			init: function() {
+				RP.point.departures.dom = RP.point.dom.find('tbody.teams_left');
+			},
+			add: function(team_id) {
+				$.post(
+					RP.AJAX_URL,
+					{
+						task: 'add_departure',
+						team: team_id
+					},
+					function(data) {
+						if(data) {
+							RP.point.here.reload();
+							RP.point.departures.reload();
+						}
+					},
+					'json'
+				);
+			},
+			reload: function() {
+				$.post(
+					RP.AJAX_URL,
+					{
+						task: 'get_teams_left'
+					},
+					function(data) {
+						RP.point.departures.dom.html(data);
+					},
+					'html'
+				);
 			}
 		}
 	}

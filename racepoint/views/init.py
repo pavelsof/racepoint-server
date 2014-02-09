@@ -56,11 +56,10 @@ class Main(View):
 	
 	def render_home(self, request):
 		"""Renders home for logged in organisers."""
-		return render_to_response(
-			'racepoint/home/home.html',
-			{},
-			context_instance = RequestContext(request)
-		)
+		if request.session['racepoint_session'].password.point:
+			return HttpResponseRedirect('point/')
+		else:
+			return HttpResponseRedirect('teams/')
 	
 	class LoginForm(forms.Form):
 		"""Form for authenticating organisers."""

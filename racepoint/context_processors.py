@@ -9,7 +9,12 @@ def populate_context(request):
 		session.last_seen = timezone.now()
 		session.save()
 		context['username'] = session.username
+		if session.password.point:
+			context['race'] = session.password.point.race
+		else:
+			context['race'] = session.password.race
 	else:
 		context['username'] = ''
+		context['race'] = ''
 	return context
 

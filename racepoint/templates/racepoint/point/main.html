@@ -1,5 +1,6 @@
 ﻿{% extends 'racepoint/base.html' %}
 {% load i18n %}
+{% block title %}{{ point.name }} &laquo; {{ race.name }}{% endblock %}
 {% block main %}
 <div id="racepoint_point">
 	<h2>Нов отбор на хоризонта</h2>
@@ -7,7 +8,7 @@
 		<div class="form-group">
 			<label for="input_team" class="form-label">Пристигащ отбор</label>
 			<select id="input_team" class="form-control">
-			{% for team in all_teams %}
+			{% for team in teams_all %}
 				<option value="{{ team.pk }}">{{ team.name }}</option>
 			{% endfor %}
 			</select>
@@ -41,6 +42,8 @@
 		</tbody>
 	</table>
 </div>
+{% endblock %}
+{% block modals %}
 <div class="modal fade bs-modal-sm" id="racepoint_select_players" role="dialog">
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">

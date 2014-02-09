@@ -66,7 +66,8 @@ class Main(PointView):
 		return render_to_response(
 			'racepoint/point/main.html',
 			{
-				'all_teams': teams_all,
+				'point': self.point,
+				'teams_all': teams_all,
 				'teams_here': teams_here,
 				'teams_left': teams_left
 			},

@@ -1,5 +1,5 @@
 """
-Django settings for ShemetnaVarna project.
+Django settings for racepoint project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
@@ -48,9 +48,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'ShemetnaVarna.urls'
+ROOT_URLCONF = 'project.urls'
 
-WSGI_APPLICATION = 'ShemetnaVarna.wsgi.application'
+WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Database

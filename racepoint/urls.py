@@ -14,3 +14,4 @@ urlpatterns = patterns('',
 	url(r'^point/ajax/$', point.Ajax.as_view()),
 )
 
+

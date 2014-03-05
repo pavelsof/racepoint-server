@@ -1,4 +1,6 @@
 *.pyc
 *.swp
 dev/*
+media/*
+project/local_settings.py
 static/*

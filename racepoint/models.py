@@ -46,7 +46,7 @@ class Session(models.Model):
 	last_seen = models.DateTimeField()
 	
 	def __str__(self):
-		return self.username +': '+ self.started
+		return self.username +': '+ str(self.started)
 
 
 class Team(models.Model):

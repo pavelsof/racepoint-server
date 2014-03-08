@@ -73,6 +73,11 @@ from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 TEMPLATE_CONTEXT_PROCESSORS += ('racepoint.context_processors.populate_context',)
 
 
+# Sessions
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+
 # Local Settings
 try:
 	from project.local_settings import *

@@ -45,13 +45,14 @@ var RP = {
 						},
 						function(data) {
 							RP.point.arrivals.modal.find('.modal-body').html(data);
-							RP.point.arrivals.modal.find('button.btn-primary').click(function() {
-								RP.point.arrivals.add();
-							});
 							RP.point.arrivals.modal.modal();
 						},
 						'html'
 					);
+				});
+				RP.point.arrivals.modal.find('button.btn-primary').click(function(e) {
+					e.preventDefault();
+					RP.point.arrivals.add();
 				});
 			},
 			add: function() {

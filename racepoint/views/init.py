@@ -29,7 +29,6 @@ class Main(View):
 				valid_from__lt = timezone.now(),
 				valid_until__gt = timezone.now()
 			)
-			print(password)
 			if password:
 				session = Session()
 				session.password = password[0]

@@ -9,6 +9,7 @@ var RP = {
 	
 	// constructor
 	init: function() {
+		if($('#racepoint_teams').length > 0) RP.teams.init();
 		if($('#racepoint_point').length > 0) RP.point.init();
 		csrf_token = $.cookie('csrftoken');
 		$.ajaxSetup({
@@ -16,6 +17,21 @@ var RP = {
 				xhr.setRequestHeader('X-CSRFToken', csrf_token);
 			}
 		});
+	},
+	
+	// teams
+	teams: {
+		dom: false,
+		modal: false,
+		init: function() {
+			RP.teams.dom = $('#racepoint_teams');
+			RP.teams.modal = $('#racepoint_delete_team');
+			RP.teams.dom.find('a.btn-danger[data-team]').click(function(e) {
+				e.preventDefault();
+				RP.teams.modal.find('input[name=team]').val($(this).data('team'));
+				RP.teams.modal.modal('show');
+			});
+		}
 	},
 	
 	// at the point

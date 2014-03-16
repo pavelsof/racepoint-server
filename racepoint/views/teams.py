@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic.base import View
@@ -38,6 +38,21 @@ class List(Teams):
 			},
 			context_instance = RequestContext(request)
 		)
+	
+	def post(self, request):
+		"""
+		Deletes a team.
+		"""
+		try:
+			team_id = int(request.POST['team'])
+		except ValueError:
+			raise Http404
+		try:
+			team = Team.objects.get(pk=team_id)
+		except Team.DoesNotExist:
+			raise Http404
+		team.delete()
+		return self.get(request)
 
 
 class Add(Teams):

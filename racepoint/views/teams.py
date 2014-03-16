@@ -12,7 +12,9 @@ class Teams(View):
 	race = None
 	
 	def dispatch(self, request, *args, **kwargs):
-		"""Requires authentication."""
+		"""
+		Ensures authentication.
+		"""
 		if 'racepoint_session' not in request.session:
 			raise Http404
 		if request.session['racepoint_session'].password.point:
@@ -23,7 +25,9 @@ class Teams(View):
 
 class List(Teams):
 	def get(self, request):
-		"""Handles the GET request."""
+		"""
+		Renders list of teams.
+		"""
 		teams = Team.objects.filter(race=self.race).order_by('name')
 		for team in teams:
 			team.players = Player.objects.filter(team=team)
@@ -40,12 +44,16 @@ class Add(Teams):
 	form = None
 	
 	def get(self, request):
-		"""Handles the GET request."""
+		"""
+		Registration form: GET.
+		"""
 		self.form = self.RegistrationForm()
 		return self.render(request)
 	
 	def post(self, request):
-		"""Handles the POST request."""
+		"""
+		Registration form: POST.
+		"""
 		self.form = self.RegistrationForm(request.POST)
 		if self.form.is_valid():
 			team = Team()
@@ -63,7 +71,9 @@ class Add(Teams):
 		return self.render(request)
 	
 	def render(self, request):
-		"""Renders the template."""
+		"""
+		Renders the template.
+		"""
 		return render_to_response(
 			'racepoint/teams/add.html',
 			{
@@ -73,7 +83,9 @@ class Add(Teams):
 		)
 	
 	class RegistrationForm(forms.Form):
-		"""Form for team registration."""
+		"""
+		Form for team registration.
+		"""
 		team = forms.CharField(max_length=120)
 		player_1 = forms.CharField(max_length=120)
 		player_2 = forms.CharField(max_length=120, required=False)

@@ -16,7 +16,9 @@ class PointView(View):
 	point = None
 	
 	def dispatch(self, request, *args, **kwargs):
-		"""Requires authentication."""
+		"""
+		Requires authentication.
+		"""
 		if 'racepoint_session' not in request.session:
 			raise Http404
 		if not request.session['racepoint_session'].password.point:
@@ -25,7 +27,9 @@ class PointView(View):
 		return super(PointView, self).dispatch(request, *args, **kwargs)
 	
 	def get_teams_here(self):
-		"""Returns list of teams that are currently at the point."""
+		"""
+		Returns list of teams that are currently at the point.
+		"""
 		teams_here = []
 		teams_at_this_point = TeamAtPoint.objects.filter(
 			point = self.point,
@@ -40,7 +44,9 @@ class PointView(View):
 		return teams_here
 	
 	def get_teams_left(self):
-		"""Returns list of teams that have already left the point."""
+		"""
+		Returns list of teams that have already left the point.
+		"""
 		teams_left = []
 		teams_left_this_point = TeamAtPoint.objects.filter(
 			point = self.point,
@@ -57,7 +63,9 @@ class PointView(View):
 
 class Main(PointView):
 	def get(self, request):
-		"""Handles the GET request."""
+		"""
+		Handles the GET request.
+		"""
 		teams_all = Team.objects.filter(
 			race = self.point.race
 		).order_by('name')
@@ -77,7 +85,9 @@ class Main(PointView):
 
 class Ajax(PointView):
 	def post(self, request):
-		"""AJAX is POST only."""
+		"""
+		AJAX is POST only.
+		"""
 		task = request.POST['task']
 		if task == 'get_players': return self.render_team_players(request)
 		elif task == 'add_arrival': return self.add_arrival(request)
@@ -87,7 +97,9 @@ class Ajax(PointView):
 		else: return HttpResponseBadRequest('')
 	
 	def __validate_team_id(self, team_id):
-		"""Returns a team or False."""
+		"""
+		Returns a team or False.
+		"""
 		try:
 			team_id = int(team_id)
 		except ValueError:
@@ -99,7 +111,9 @@ class Ajax(PointView):
 		return team
 	
 	def render_team_players(self, request):
-		"""Renders the contents of the select players modal."""
+		"""
+		Renders the contents of the select players modal.
+		"""
 		team = self.__validate_team_id(request.POST['team'])
 		if not team:
 			return HttpResponseBadRequest('')
@@ -113,7 +127,9 @@ class Ajax(PointView):
 		)
 	
 	def add_arrival(self, request):
-		"""Adds a new arrival to the db and gives a JSON answer."""
+		"""
+		Adds a new arrival to the db and gives a JSON answer.
+		"""
 		team = self.__validate_team_id(request.POST['team'])
 		if not team:
 			return HttpResponseBadRequest('')
@@ -137,7 +153,9 @@ class Ajax(PointView):
 		return HttpResponse(json.dumps(answer))
 	
 	def add_departure(self, request):
-		"""Adds a new departure to the db and gives a JSON answer."""
+		"""
+		Adds a new departure to the db and gives a JSON answer.
+		"""
 		try:
 			team_at_point_id = int(request.POST['team'])
 		except ValueError: return HttpResponseBadRequest('')
@@ -150,7 +168,9 @@ class Ajax(PointView):
 		return HttpResponse(json.dumps(answer))
 	
 	def render_teams_here(self, request):
-		"""Renders the body of the teams here table."""
+		"""
+		Renders the body of the teams here table.
+		"""
 		teams_here = self.get_teams_here()
 		return render_to_response(
 			'racepoint/point/teams_here.html',
@@ -161,7 +181,9 @@ class Ajax(PointView):
 		)
 	
 	def render_teams_left(self, request):
-		"""Renders the body of the teams left table."""
+		"""
+		Renders the body of the teams left table.
+		"""
 		teams_left = self.get_teams_left()
 		return render_to_response(
 			'racepoint/point/teams_left.html',

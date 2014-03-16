@@ -14,14 +14,18 @@ class Main(View):
 	error = False
 	
 	def get(self, request):
-		"""Handles the GET request."""
+		"""
+		Handles the GET request.
+		"""
 		if 'racepoint_session' in request.session:
 			return self.render_home(request)
 		else:
 			return self.render_login(request)
 	
 	def post(self, request):
-		"""Handles the POST request."""
+		"""
+		Handles the POST request.
+		"""
 		self.form = self.LoginForm(request.POST)
 		if self.form.is_valid():
 			password = Password.objects.filter(
@@ -41,7 +45,9 @@ class Main(View):
 		return self.render_login(request)
 	
 	def render_login(self, request):
-		"""Renders the login form."""
+		"""
+		Renders the login form.
+		"""
 		if self.form is None:
 			self.form = self.LoginForm()
 		return render_to_response(
@@ -54,21 +60,27 @@ class Main(View):
 		)
 	
 	def render_home(self, request):
-		"""Renders home for logged in organisers."""
+		"""
+		Renders home for logged in organisers.
+		"""
 		if request.session['racepoint_session'].password.point:
 			return HttpResponseRedirect('point/')
 		else:
 			return HttpResponseRedirect('teams/')
 	
 	class LoginForm(forms.Form):
-		"""Form for authenticating organisers."""
+		"""
+		Form for authenticating organisers.
+		"""
 		name = forms.CharField(max_length=120)
 		password = forms.CharField(max_length=120)
 
 
 class Logout(View):
 	def get(self, request):
-		"""Handles the GET request."""
+		"""
+		Handles the GET request.
+		"""
 		if 'racepoint_session' in request.session:
 			del request.session['racepoint_session']
 		return HttpResponseRedirect('/')

@@ -1,6 +1,6 @@
 *.pyc
 *.swp
-dev/*
+development/*
 media/*
-project/local_settings.py
+project/settings_local.py
 static/*

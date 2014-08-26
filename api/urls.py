@@ -50,4 +50,3 @@ DELETE /log/
 	400: error
 	403
 """
-

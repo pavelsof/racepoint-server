@@ -1,5 +1,7 @@
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
 from api.auth import authenticate_request
@@ -10,6 +12,7 @@ from datetime import datetime
 
 
 class LogView(View):
+	@method_decorator(csrf_exempt)
 	def dispatch(self, request, *args, **kwargs):
 		"""
 		Ensures the user has a valid token.
@@ -33,7 +36,7 @@ class LogView(View):
 		for event in events:
 			response.append({
 				'id': event.pk,
-				'teamID': event.team.pk,
+				'teamId': event.team.pk,
 				'teamName': event.team.name,
 				'type': event.event_type,
 				'timestamp': event.timestamp,
@@ -56,7 +59,7 @@ class LogView(View):
 			assert type(post_fields['event_type']) is str
 			assert post_fields['event_type'] in ('ARR', 'DEP')
 			assert type(post_fields['timestamp']) is int
-			assert type(post_fields['is_successful']) is int
+			assert type(post_fields['is_successful']) is bool
 		except (AssertionError, KeyError):
 			return HttpResponse(_("Hack attempt detected."), status=400)
 		
@@ -69,9 +72,12 @@ class LogView(View):
 		event.point = self.token.point
 		event.team = team
 		event.event_type = post_fields['event_type']
-		event.timestamp = datetime.fromtimestamp(post_fields['timestamp'])
-		event.is_successful = bool(post_fields['is_successful'])
+		event.timestamp = datetime.fromtimestamp(post_fields['timestamp']/1000.0)
+		event.is_successful = post_fields['is_successful']
 		event.save()
 		
-		return HttpResponse(status=200)
+		response = {
+			'id': event.pk
+		}
+		return HttpResponse(make_json(response), status=200)
 

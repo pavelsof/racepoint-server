@@ -20,7 +20,7 @@ class CorsMiddleware:
 		"""
 		if 'HTTP_ORIGIN' in request.META:
 			response['Access-Control-Allow-Origin'] = "*"
-			response['Access-Control-Allow-Methods'] = "GET, OPTIONS, PUT"
+			response['Access-Control-Allow-Methods'] = "GET, OPTIONS, PUT, DELETE"
 			response['Access-Control-Allow-Headers'] = "Content-Type, Racepoint-Token, Origin"
 			response['Access-Control-Max-Age'] = "86400"
 		return response

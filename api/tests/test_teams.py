@@ -52,4 +52,31 @@ class TeamsTestCase(TestCase):
 		team_ = Team.objects.latest('created')
 		self.assertEqual(team_.name, 'New Team')
 		self.assertEqual(team_.get_player_names(), ["One", "Two", "Three", "Four"])
+		body = read_json(response.content)
+		self.assertEqual(team_.pk, body['id'])
+	
+	def test_delete(self):
+		race = RaceFactory.produce()
+		team = TeamFactory.produce(race)
+		another_race = RaceFactory.produce()
+		another_team = TeamFactory.produce(another_race)
+		count_teams = Team.objects.count()
+		
+		client = Client()
+		token = AuthTokenFactory.produce(race)
+		
+		# no token
+		response = client.delete('/api/teams/')
+		self.assertEqual(response.status_code, 403)
+		
+		# token for another race
+		body = '{"id":'+ str(another_team.pk) +'}'
+		response = client.delete('/api/teams/', body, HTTP_RACEPOINT_TOKEN=token.token)
+		self.assertEqual(response.status_code, 400)
+		
+		# good input
+		body = '{"id":'+ str(team.pk) +'}'
+		response = client.delete('/api/teams/', body, HTTP_RACEPOINT_TOKEN=token.token)
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(Team.objects.count(), count_teams-1)
 

@@ -1,5 +1,7 @@
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View
 
 from api.auth import authenticate_request
@@ -8,6 +10,7 @@ from api.views.utils import make_json, read_json
 
 
 class TeamsView(View):
+	@method_decorator(csrf_exempt)
 	def dispatch(self, request, *args, **kwargs):
 		"""
 		Ensures the user has a valid token.
@@ -65,5 +68,33 @@ class TeamsView(View):
 			player.name = player_name
 			player.save()
 		
+		response = {
+			'id': team.pk
+		}
+		return HttpResponse(make_json(response), status=200)
+	
+	def delete(self, request):
+		"""
+		Deletes a team.
+		"""
+		try:
+			post_fields = read_json(request.body)
+		except ValueError:
+			return HttpResponse(_("JSON, please!"), status=400)
+		
+		try:
+			assert type(post_fields['id']) is int
+		except AssertionError:
+			return HttpResponse(_("Hack attempt detected."), status=400)
+		
+		try:
+			team = Team.objects.get(
+				race = self.token.race,
+				pk = post_fields['id']
+			)
+		except Team.DoesNotExist:
+			return HttpResponse(_("No such team."), status=400)
+		
+		team.delete()
 		return HttpResponse(status=200)
 

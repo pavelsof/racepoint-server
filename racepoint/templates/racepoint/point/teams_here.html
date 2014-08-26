@@ -1,8 +1,0 @@
-﻿{% load i18n %}
-{% for team in teams_here %}
-	<tr>
-		<td>{{ team.name }}</td>
-		<td>{{ team.arrival }}</td>
-		<td><a href="#" class="btn btn-default" data-team="{{ team.pk }}">Отбележи като заминали</a></td>
-	</tr>
-{% endfor %}

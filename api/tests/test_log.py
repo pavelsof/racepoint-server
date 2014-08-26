@@ -1,13 +1,14 @@
 from django.test import TestCase
 from django.test.client import Client
-from django.utils.timezone import now
 
 from api.models import *
 from api.tests.factory import *
 from api.views.utils import read_json
 
-from time import mktime
+from datetime import datetime
+from time import time
 
+import pytz
 import random
 
 
@@ -46,17 +47,24 @@ class LogTestCase(TestCase):
 		self.assertEqual(response.status_code, 403)
 		
 		# good input
-		d = now()
-		timestamp = int(mktime(d.timetuple()))
+		# d = now()
+		# timestamp = int(mktime(d.timetuple()))*1000
+		t = int(time()*1000)
+		d = datetime.fromtimestamp(t/1000.0)
+		d = d.replace(tzinfo=pytz.UTC)
+		timestamp = t
 		body = ('{"team_id":'+ str(team.pk) +','
 				' "event_type":"ARR",'
 				' "timestamp":'+ str(timestamp) +','
-				' "is_successful":0}')
+				' "is_successful":false}')
 		response = client.put('/api/log/', body, HTTP_RACEPOINT_TOKEN=token.token)
 		self.assertEqual(response.status_code, 200)
 		
 		event = LogEvent.objects.latest('created')
 		self.assertEqual(event.point.pk, point.pk)
 		self.assertEqual(event.event_type, 'ARR')
+		self.assertEqual(event.timestamp, d)
 		self.assertEqual(event.is_successful, False)
+		body = read_json(response.content)
+		self.assertEqual(event.pk, body['id'])
 

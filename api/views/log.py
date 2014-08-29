@@ -39,7 +39,7 @@ class LogView(View):
 				'teamId': event.team.pk,
 				'teamName': event.team.name,
 				'type': event.event_type,
-				'timestamp': event.timestamp,
+				'timestamp': int(event.timestamp.timestamp()*1000),
 				'isSuccessful': event.is_successful
 			})
 		

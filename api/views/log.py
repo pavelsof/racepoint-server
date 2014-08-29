@@ -8,7 +8,7 @@ from api.auth import authenticate_request
 from api.models import LogEvent, Team
 from api.views.utils import make_json, read_json
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 
 class LogView(View):
@@ -34,7 +34,7 @@ class LogView(View):
 		
 		response = []
 		for event in events:
-			t = (event.timestamp - datetime(1970, 1, 1)) / timedelta(seconds=1)
+			t = (event.timestamp - datetime(1970, 1, 1, tzinfo=timezone.utc)) / timedelta(seconds=1)
 			response.append({
 				'id': event.pk,
 				'teamId': event.team.pk,

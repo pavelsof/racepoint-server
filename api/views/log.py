@@ -60,7 +60,7 @@ class LogView(View):
 			assert type(post_fields['event_type']) is str
 			assert post_fields['event_type'] in ('ARR', 'DEP')
 			assert type(post_fields['timestamp']) is int
-			assert type(post_fields['is_successful']) is bool
+			#assert type(post_fields['is_successful']) is bool
 		except (AssertionError, KeyError):
 			return HttpResponse(_("Hack attempt detected."), status=400)
 		
@@ -74,7 +74,7 @@ class LogView(View):
 		event.team = team
 		event.event_type = post_fields['event_type']
 		event.timestamp = datetime.fromtimestamp(post_fields['timestamp']/1000.0)
-		event.is_successful = post_fields['is_successful']
+		#event.is_successful = post_fields['is_successful']
 		event.save()
 		
 		response = {

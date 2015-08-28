@@ -76,6 +76,8 @@ class LogEvent(models.Model):
 	timestamp = models.DateTimeField()
 	created = models.DateTimeField(auto_now_add=True)
 	
+	count_people = models.PositiveIntegerField(null=True, blank=True)
+	
 	class Meta:
 		ordering = ['timestamp']
 		get_latest_by = 'timestamp'

@@ -41,7 +41,8 @@ class LogView(View):
 				'teamName': event.team.name,
 				'type': event.event_type,
 				'timestamp': int(t*1000),
-				'isSuccessful': event.is_successful
+				'isSuccessful': event.is_successful,
+				'countPeople': event.count_people
 			})
 		
 		return HttpResponse(make_json(response), status=200)
@@ -61,6 +62,7 @@ class LogView(View):
 			assert post_fields['event_type'] in ('ARR', 'DEP')
 			assert type(post_fields['timestamp']) is int
 			#assert type(post_fields['is_successful']) is bool
+			assert type(post_fields['count_people']) is int
 		except (AssertionError, KeyError):
 			return HttpResponse(_("Hack attempt detected."), status=400)
 		
@@ -75,6 +77,7 @@ class LogView(View):
 		event.event_type = post_fields['event_type']
 		event.timestamp = datetime.fromtimestamp(post_fields['timestamp']/1000.0)
 		#event.is_successful = post_fields['is_successful']
+		event.count_people = post_fields['count_people']
 		event.save()
 		
 		response = {
